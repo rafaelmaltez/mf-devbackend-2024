@@ -1,10 +1,12 @@
 ﻿using mf_devbackend_2024.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace mf_devbackend_2024.Controllers
 {
+    [Authorize]
     public class ConsumptionsController : Controller
     {
         private readonly AppDbContext _context;

@@ -1,9 +1,11 @@
 ﻿using mf_devbackend_2024.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace mf_devbackend_2024.Controllers
 {
+    [Authorize]
     public class VehiclesController : Controller
     {
         private readonly AppDbContext _context;
