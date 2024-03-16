@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace mf_devbackend_2024.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly AppDbContext _context;
@@ -31,11 +31,11 @@ namespace mf_devbackend_2024.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(User user)
         {
-            var data = await _context.Users.FindAsync(user.Id);
+            var data = await _context.Users.FirstOrDefaultAsync(u => u.UserName == user.UserName);
 
             if (data == null)
             {
-                ViewBag.Message = "Invalid user and/or password";
+                ViewBag.Message = "Invalid username and/or password";
                 return View();
             }
 
@@ -46,7 +46,7 @@ namespace mf_devbackend_2024.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, data.Name),
-                    new Claim(ClaimTypes.NameIdentifier, data.Id.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, data.UserName),
                     new Claim(ClaimTypes.Role, data.Profile.ToString())
                 };
 
@@ -121,10 +121,17 @@ namespace mf_devbackend_2024.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Password,Profile")] User user)
+        public async Task<IActionResult> Create([Bind("Id,Name,UserName,Password,Profile")] User user)
         {
             if (ModelState.IsValid)
             {
+                var existingUserName = await _context.Users.FirstOrDefaultAsync(u => u.UserName == user.UserName);
+
+                if (existingUserName != null)
+                {
+                    ViewBag.Message = "Username already taken";
+                    return View(user);
+                }
                 user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
                 _context.Add(user);
                 await _context.SaveChangesAsync();
@@ -154,7 +161,7 @@ namespace mf_devbackend_2024.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Password,Profile")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,UserName,Password,Profile")] User user)
         {
             if (id != user.Id)
             {
@@ -165,6 +172,14 @@ namespace mf_devbackend_2024.Controllers
             {
                 try
                 {
+                    var existingUserName = await _context.Users.FirstOrDefaultAsync(u => u.UserName == user.UserName && u.Id != user.Id);
+                    
+                    if (existingUserName != null) {
+                        ViewBag.Message = "Username already taken";
+                        return View(user);
+                    }
+                    
+                    user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
                     _context.Update(user);
                     await _context.SaveChangesAsync();
                 }
