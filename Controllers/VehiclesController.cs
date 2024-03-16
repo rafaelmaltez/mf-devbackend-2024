@@ -69,10 +69,10 @@ namespace mf_devbackend_2024.Controllers
                 return NotFound();
 
             var vehicleData = await _context.Vehicles.FindAsync(id);
-            
-            if(vehicleData == null)
+
+            if (vehicleData == null)
                 return NotFound();
-            
+
             return View(vehicleData);
         }
 
@@ -103,7 +103,7 @@ namespace mf_devbackend_2024.Controllers
             _context.Vehicles.Remove(vehicleData);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Index") ;
+            return RedirectToAction("Index");
         }
     }
 }

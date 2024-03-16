@@ -24,5 +24,7 @@ namespace mf_devbackend_2024.Models
         [Required(ErrorMessage = "ModelYear is mandatoy")]
         [Display(Name = "Model Year")]
         public int ModelYear { get; set; }
+
+        public ICollection<Consumption> Consumptions { get; set; }
     }
 }
