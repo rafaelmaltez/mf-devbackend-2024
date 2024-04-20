@@ -7,6 +7,7 @@ using System.Security.Claims;
 
 namespace mf_devbackend_2024.Controllers
 {
+
     [Authorize]
     public class UsersController : Controller
     {
@@ -31,6 +32,7 @@ namespace mf_devbackend_2024.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(User user)
         {
+            Console.WriteLine("Login", user);
             var data = await _context.Users.FirstOrDefaultAsync(u => u.UserName == user.UserName);
 
             if (data == null)
@@ -111,6 +113,7 @@ namespace mf_devbackend_2024.Controllers
         }
 
         // GET: Users/Create
+        [AllowAnonymous]
         public IActionResult Create()
         {
             return View();
@@ -123,8 +126,10 @@ namespace mf_devbackend_2024.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,UserName,Password,Profile")] User user)
         {
+            Console.WriteLine("User:", user);
             if (ModelState.IsValid)
             {
+                Console.WriteLine("is valid:", ModelState.IsValid);
                 var existingUserName = await _context.Users.FirstOrDefaultAsync(u => u.UserName == user.UserName);
 
                 if (existingUserName != null)
@@ -173,12 +178,13 @@ namespace mf_devbackend_2024.Controllers
                 try
                 {
                     var existingUserName = await _context.Users.FirstOrDefaultAsync(u => u.UserName == user.UserName && u.Id != user.Id);
-                    
-                    if (existingUserName != null) {
+
+                    if (existingUserName != null)
+                    {
                         ViewBag.Message = "Username already taken";
                         return View(user);
                     }
-                    
+
                     user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
                     _context.Update(user);
                     await _context.SaveChangesAsync();
