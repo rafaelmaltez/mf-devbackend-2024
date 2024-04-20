@@ -12,18 +12,27 @@ namespace mf_devbackend_2024.Models
 
         public DbSet<User> Users { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public static void Seed(WebApplication application)
         {
-            modelBuilder.Entity<User>().HasData(
-                new User
+
+            using (var scope = application.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetService<AppDbContext>();
+                context.Database.EnsureCreated();
+                User admin = new User
                 {
                     Id = 1,
                     Name = "Admin",
                     UserName = "admin",
                     Password = "$2a$10$ekA30WsbMQyQOJyJozk31eRathzdWM.PMuPS0FZ6ctTIH1Ajtl3Ny",
                     Profile = 0
-                }
-            );
+                };
+
+                context.Users.Add(admin);
+                context.SaveChanges();
+
+            }
         }
+
     }
 }
