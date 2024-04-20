@@ -21,7 +21,6 @@ namespace mf_devbackend_2024.Models
                 context.Database.EnsureCreated();
                 User admin = new User
                 {
-                    Id = 1,
                     Name = "Admin",
                     UserName = "admin",
                     Password = "$2a$10$ekA30WsbMQyQOJyJozk31eRathzdWM.PMuPS0FZ6ctTIH1Ajtl3Ny",
@@ -29,10 +28,7 @@ namespace mf_devbackend_2024.Models
                 };
 
                 context.Users.Add(admin);
-                context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT mf-devbackend.Users ON;");
                 context.SaveChanges();
-                context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT mf-devbackend.Users OFF;");
-
             }
         }
 

@@ -6,7 +6,8 @@ services:
     environment:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=#Password123%
+    platform: linux/amd64
     ports:
-      - 1433:1433
+      - "1433:1433"
     volumes:
       - ./database:/var/opt/mssql/data
