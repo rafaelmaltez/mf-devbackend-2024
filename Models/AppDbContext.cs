@@ -29,7 +29,9 @@ namespace mf_devbackend_2024.Models
                 };
 
                 context.Users.Add(admin);
+                context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT mf-devbackend.Users ON;");
                 context.SaveChanges();
+                context.Database.ExecuteSqlRaw("SET IDENTITY_INSERT mf-devbackend.Users ON;");
 
             }
         }
