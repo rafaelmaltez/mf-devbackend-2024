@@ -18,7 +18,11 @@ namespace mf_devbackend_2024.Models
             using (var scope = application.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetService<AppDbContext>();
-                context.Database.EnsureCreated();
+                var adminAlreadySeeded = context.Users.FirstOrDefault<User>(user => user.UserName == "admin");
+                if (adminAlreadySeeded != null)
+                {
+                    return;
+                }
                 User admin = new User
                 {
                     Name = "Admin",
@@ -26,7 +30,6 @@ namespace mf_devbackend_2024.Models
                     Password = "$2a$10$ekA30WsbMQyQOJyJozk31eRathzdWM.PMuPS0FZ6ctTIH1Ajtl3Ny",
                     Profile = 0
                 };
-
                 context.Users.Add(admin);
                 context.SaveChanges();
             }

@@ -41,9 +41,10 @@ if (!app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetService<AppDbContext>();
-    context.Database.EnsureCreated();
+    context.Database.Migrate();
 }
 
+AppDbContext.Seed(app);
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -57,6 +58,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-AppDbContext.Seed(app);
 
 app.Run();
